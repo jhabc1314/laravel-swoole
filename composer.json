@@ -1,0 +1,20 @@
+{
+    "name": "jackdou/laravel-swoole",
+    "description": "laravel swoole扩展",
+    "type": "package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "江恒",
+            "email": "1139209675@qq.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "psr-4":{
+            "Jackdou\\Swoole\\": "src/"
+        }
+    }
+}
