@@ -34,6 +34,7 @@ class SwooleSocket extends Command
      */
     public function handle()
     {
+        $this->socket->registerServer();
         $this->socket->server->start();
     }
 }

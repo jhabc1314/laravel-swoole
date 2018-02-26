@@ -35,6 +35,7 @@ class SwooleServer extends Command
      */
     public function handle()
     {
+        $this->server->registerServer();
         $this->server->server->start();
     }
 }

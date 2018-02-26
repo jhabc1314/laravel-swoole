@@ -8,7 +8,6 @@ class SwooleSocketService extends SwooleService
     public function __construct()
     {
         $this->initConfig();
-        $this->registerServer();
     }
 
     private function initConfig()
@@ -18,9 +17,10 @@ class SwooleSocketService extends SwooleService
         $this->port = $this->config['port'];
     }
 
-    private function registerServer()
+    public function registerServer()
     {
         $this->server = new Server($this->ip, $this->port);
+        //var_dump($this->server->master_pid);
 
         $this->server->on('open', function (Server $server, $request) {
             echo "server: handshake success with fd{$request->fd}\n";
