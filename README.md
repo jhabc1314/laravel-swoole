@@ -1,6 +1,5 @@
 # laravel-swoole
 laravel swoole扩展 目前提供了Server和WebSocket两种模式，使用一个artisan命令即可开启一个服务，省去了写代码的烦恼
-!!目前功能并不完整，仅供开发学习使用
 
 ## 使用
 - 安装
