@@ -1,4 +1,5 @@
 <?php
+
 namespace Jackdou\Swoole;
 
 use Illuminate\Support\ServiceProvider;
@@ -9,17 +10,16 @@ class SwooleServiceProvider extends ServiceProvider
     {
         // Publish config files
         $this->publishes([
-            __DIR__.'/config/config.php' => config_path('swoole.php'),
+            __DIR__ . '/config/config.php' => config_path('swoole.php'),
         ]);
-
-
     }
 
     public function register()
     {
         //合并用户自定义配置和默认配置
         $this->mergeConfigFrom(
-            __DIR__.'/config/config.php', 'swoole'
+            __DIR__ . '/config/config.php',
+            'swoole'
         );
 
         //注册一个服务

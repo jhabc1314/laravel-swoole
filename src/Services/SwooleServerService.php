@@ -8,7 +8,6 @@ class SwooleServerService extends SwooleService
     public function __construct()
     {
         $this->initConfig();
-
     }
 
     private function initConfig()

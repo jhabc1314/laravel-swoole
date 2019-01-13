@@ -1,14 +1,11 @@
 {
     "name": "jackdou/laravel-swoole",
-    "description": "laravel swoole扩展",
+    "description": "laravel swoole 扩展",
     "type": "package",
     "license": "MIT",
     "authors": [
         {
-            "name": "江恒",
-	    "test":"aa",
-	    "test2":"bb",
-	    "test3":"cc",
+            "name": "jackdou",
             "email": "1139209675@qq.com"
         }
     ],
