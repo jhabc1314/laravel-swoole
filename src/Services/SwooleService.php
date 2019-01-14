@@ -7,7 +7,8 @@ class SwooleService
 
     public $config;
 
-    public $ip;
+    public $host;
 
     public $port;
+
 }

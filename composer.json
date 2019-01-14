@@ -16,5 +16,8 @@
         "psr-4":{
             "Jackdou\\Swoole\\": "src/"
         }
+    },
+    "require-dev": {
+        "swoft/swoole-ide-helper": "^4.2"
     }
 }
