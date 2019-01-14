@@ -14,7 +14,7 @@ class SwooleServerService extends SwooleService
     private function initConfig()
     {
         //$this->config = config('swoole.server');
-        $this->config = require __DIR__ . "../config/config.php";
+        $this->config = require __DIR__ . "/../config/config.php";
         $this->config = $this->config['rpc_server'];
         $this->host = $this->config['host'];
         $this->port = $this->config['port'];
