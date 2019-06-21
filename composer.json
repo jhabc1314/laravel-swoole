@@ -15,8 +15,8 @@
     },
     "autoload": {
         "psr-4":{
-            "Jackdou\\Swoole\\": "src/",
-            "Jackdou\\Swoole\\Tests\\":"tests/"
+            "JackDou\\Swoole\\": "src/",
+            "JackDou\\Swoole\\Tests\\":"tests/"
         }
     },
     "require-dev": {
