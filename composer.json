@@ -1,6 +1,6 @@
 {
     "name": "jackdou/laravel-swoole",
-    "description": "laravel swoole 扩展",
+    "description": "laravel 框架的 swoole 组件，基础的TCP，WS 服务",
     "type": "package",
     "license": "MIT",
     "authors": [
@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-
+        "php" : ">=7.1",
+        "laravel/framework": "^5.8"
     },
     "autoload": {
         "psr-4":{
@@ -20,5 +21,12 @@
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "JackDou\\Swoole\\SwooleServiceProvider"
+            ]
+        }
     }
 }

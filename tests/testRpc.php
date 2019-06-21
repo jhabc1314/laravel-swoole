@@ -6,12 +6,8 @@
  * Time: 20:49
  */
 namespace Jackdou\Swoole\Tests;
-if (file_exists(__DIR__ . '../autoload.php')) {
-    require __DIR__ . '../autoload.php';
-} else {
-    require __DIR__ . '/../vendor/autoload.php';
-}
-class testRpc
+
+class testRpc extends Test
 {
     public function __construct()
     {
@@ -22,9 +18,6 @@ class testRpc
     public function run()
     {
         $server = new \Jackdou\Swoole\Services\SwooleServerService();
-        $server->registerServer();
+        $server->boot();
     }
 }
-
-$a = new testRpc();
-$a->run();

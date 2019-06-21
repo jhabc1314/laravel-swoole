@@ -1,22 +1,16 @@
 <?php
 namespace Jackdou\Swoole\Services;
 
+use JackDou\Services\SwooleSocket;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use \Swoole\WebSocket\Server;
 
-class SwooleSocketService extends SwooleService
+class SwooleSocketService extends SwooleSocket
 {
     public function __construct()
     {
-        $this->initConfig();
-    }
-
-    private function initConfig()
-    {
-        $this->config = config('swoole.socket');
-        $this->ip = $this->config['ip'];
-        $this->port = $this->config['port'];
+        parent::__construct();
     }
 
     public function registerServer()

@@ -2,29 +2,24 @@
 
 namespace Jackdou\Swoole\Services;
 
+use Illuminate\Support\Facades\Log;
 use Swoole\Server;
 
 class SwooleServerService extends SwooleService
 {
     public function __construct()
     {
-        $this->initConfig();
+        parent::__construct();
     }
 
-    private function initConfig()
-    {
-        //$this->config = config('swoole.server');
-        $this->config = require __DIR__ . "/../config/config.php";
-        $this->config = $this->config['rpc_server'];
-        $this->host = $this->config['host'];
-        $this->port = $this->config['port'];
-    }
-
-    public function registerServer()
+    /**
+     * 启动server服务
+     */
+    public function boot()
     {
         $mode = $this->config['mode'] ?: SWOOLE_PROCESS;
         $sock_type = $this->config['sock_type'] ?: SWOOLE_TCP;
-        $this->server = new Server($this->host, $this->port, $mode, $sock_type);
+        $this->server = new Server($this->ip, $this->port, $mode, $sock_type);
         $setting = array_filter($this->config['setting'], function ($item) {
             return $item !== null;
         });
@@ -36,7 +31,7 @@ class SwooleServerService extends SwooleService
         ];
 
         foreach ($event_list as $event) {
-            $this->server->on($event, [$this, "on" . $event]);
+            $this->server->on($event, [$this, "on" . ucfirst($event)]);
         }
         $this->server->start();
     }
@@ -48,11 +43,13 @@ class SwooleServerService extends SwooleService
      */
     public function onStart(Server $server)
     {
+        Log::info("onStart, master_pid: " . $server->master_pid);
+        swoole_set_process_name($this->config['name'] . '_master');
         echo "onStart..." . $server->master_pid . "\n";
     }
 
     /**
-     * Server 正常结束时发生 kill -15 才可以
+     * Server 正常结束时发生 kill -15 才可以 -USER1 -USER2 一个reload，一个stop
      *
      * @param Server $server
      */
@@ -69,6 +66,7 @@ class SwooleServerService extends SwooleService
      */
     public function onWorkerStart(Server $server, $worker_id)
     {
+        swoole_set_process_name($this->config['name']. '_worker');
         $p_type = $server->taskworker ? "task" : "work";
 
         echo "onWorkerStart,this is a $p_type..." . $worker_id . "\n";
@@ -122,10 +120,17 @@ class SwooleServerService extends SwooleService
      * @param $fd
      * @param $reactor_id
      * @param $data
+     *
+     * @return string
      */
     public function onReceive(Server $server, $fd, $reactor_id, $data)
     {
+        //校验，解包，使用默认
+        //处理请求。。。
+        echo $data . "\n";
+
         echo "onReceive..." . "\n";
+        return 'copy that';
     }
 
     /**
@@ -148,8 +153,9 @@ class SwooleServerService extends SwooleService
      * @param int $src_worker_id
      * @param mixed $data
      */
-    public function onTask(Server $server, int $task_id, int $src_worker_id, mixed $data)
+    public function onTask(Server $server, int $task_id, int $src_worker_id, $data)
     {
+        swoole_set_process_name($this->config['name'] . '_task');
         echo "onTask..." . "\n";
     }
 
@@ -187,6 +193,7 @@ class SwooleServerService extends SwooleService
      */
     public function onManagerStart(Server $server)
     {
+        swoole_set_process_name($this->config['name'] . '_manager');
         echo "onManagerStart..." . "\n";
     }
 

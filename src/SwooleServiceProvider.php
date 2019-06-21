@@ -10,7 +10,7 @@ class SwooleServiceProvider extends ServiceProvider
     {
         // Publish config files
         $this->publishes([
-            __DIR__ . '/config/config.php' => config_path('swoole.php'),
+            __DIR__ . '/config/swoole.php' => config_path('swoole.php'),
         ]);
     }
 
@@ -18,7 +18,7 @@ class SwooleServiceProvider extends ServiceProvider
     {
         //合并用户自定义配置和默认配置
         $this->mergeConfigFrom(
-            __DIR__ . '/config/config.php',
+            __DIR__ . '/config/swoole.php',
             'swoole'
         );
 
