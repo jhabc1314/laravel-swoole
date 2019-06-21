@@ -1,5 +1,5 @@
 <?php
-namespace Jackdou\Swoole\Services;
+namespace JackDou\Swoole\Services;
 
 use Swoole\Client;
 use Swoole\Server;
@@ -24,7 +24,9 @@ class SwooleService
 
     public function __construct()
     {
-        $this->config = config('swoole.server');
+        //$this->config = config('swoole.server');
+        $this->config = require (__DIR__ . '/../config/swoole.php');
+        $this->config = $this->config['server'];
         $this->host = $this->config['host'];
         $this->port = $this->config['port'];
     }

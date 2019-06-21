@@ -5,7 +5,7 @@
  * Date: 2019/1/14
  * Time: 20:49
  */
-namespace Jackdou\Swoole\Tests;
+namespace JackDou\Swoole\Tests;
 
 class testRpc extends Test
 {
@@ -17,7 +17,7 @@ class testRpc extends Test
 
     public function run()
     {
-        $server = new \Jackdou\Swoole\Services\SwooleServerService();
+        $server = new \JackDou\Swoole\Services\SwooleServerService();
         $server->boot();
     }
 }

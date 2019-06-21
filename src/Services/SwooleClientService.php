@@ -25,18 +25,31 @@ class SwooleClientService extends SwooleService
      * params => []
      * @param array $param
      *
-     * @return array
+     * @return string
      */
     public function send($param)
     {
-        $this->client = new Client(SWOOLE_SOCK_TCP);
-        if (!$this->client->connect('127.0.0.1', 8821)) {
+        $this->client = new Client(SWOOLE_TCP);
+        $this->client->set([
+            'open_eof_check' => true,
+            'package_eof' => "\r\n",
+            'open_length_check' => true, //开启包长检测
+            'package_length_type' => 'N', //长度类型
+            'package_body_offset' => 4, //包体偏移量
+            'package_length_offset' => 0, //协议中的包体长度字段在第几字节
+        ]);
+        if (!$r = $this->client->connect('127.0.0.1', 8821)) {
             exit('connect fail');
         }
-        $this->client->send(json_encode($param));
+        //var_dump($r);
+        //$this->client->close();die;
+        $param .= "\r\n";
+        $data = pack('N', strlen($param)) . $param;
+        //var_dump($data);
+        $this->client->send($data);
         $recv = $this->client->recv();
         $this->client->close();
-        return json_decode($recv);
+        return substr($recv, 4);
     }
 
 

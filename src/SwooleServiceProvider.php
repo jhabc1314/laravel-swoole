@@ -1,6 +1,6 @@
 <?php
 
-namespace Jackdou\Swoole;
+namespace JackDou\Swoole;
 
 use Illuminate\Support\ServiceProvider;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jackdou\Swoole\Services;
+namespace JackDou\Swoole\Services;
 
 use Illuminate\Support\Facades\Log;
 use Swoole\Server;
@@ -19,15 +19,17 @@ class SwooleServerService extends SwooleService
     {
         $mode = $this->config['mode'] ?: SWOOLE_PROCESS;
         $sock_type = $this->config['sock_type'] ?: SWOOLE_TCP;
-        $this->server = new Server($this->ip, $this->port, $mode, $sock_type);
+        $this->server = new Server($this->host, $this->port);
         $setting = array_filter($this->config['setting'], function ($item) {
             return $item !== null;
         });
+        print_r($setting);
+        ini_set("error_log", __DIR__ . '/../../php_errors.log');
         $this->server->set($setting);
 
         $event_list = [
-            'connect', 'start', 'shutdown', 'workerstart', 'workerstop', 'workerexit',
-            'receive', 'close', 'task', 'finish', 'workererror', 'managerstart', 'managerstop',
+            'connect', 'start', 'shutdown', 'workerstart', 'workerstop',
+            'receive', 'close', 'task', 'finish', 'managerstart', 'managerstop',
         ];
 
         foreach ($event_list as $event) {
@@ -43,7 +45,7 @@ class SwooleServerService extends SwooleService
      */
     public function onStart(Server $server)
     {
-        Log::info("onStart, master_pid: " . $server->master_pid);
+        //Log::info("onStart, master_pid: " . $server->master_pid);
         swoole_set_process_name($this->config['name'] . '_master');
         echo "onStart..." . $server->master_pid . "\n";
     }
@@ -66,8 +68,8 @@ class SwooleServerService extends SwooleService
      */
     public function onWorkerStart(Server $server, $worker_id)
     {
-        swoole_set_process_name($this->config['name']. '_worker');
-        $p_type = $server->taskworker ? "task" : "work";
+        $p_type = $server->taskworker ? "_task" : "_worker";
+        swoole_set_process_name($this->config['name'] . $p_type);
 
         echo "onWorkerStart,this is a $p_type..." . $worker_id . "\n";
     }
@@ -121,16 +123,26 @@ class SwooleServerService extends SwooleService
      * @param $reactor_id
      * @param $data
      *
-     * @return string
      */
     public function onReceive(Server $server, $fd, $reactor_id, $data)
     {
+        echo "onReceive...\n";
         //校验，解包，使用默认
         //处理请求。。。
-        echo $data . "\n";
+        //echo $data . "\n";
+        $receive = substr($data, 4);
+        //echo $receive . "\n";
+        $response = 'i am coming';
+        $receive .= "!\r\n";
+        $res = pack('N', strlen($receive)) . $receive;
 
-        echo "onReceive..." . "\n";
-        return 'copy that';
+        if (!$server->send($fd, $res)) {
+            echo 'send fail...';
+        };
+        echo 123;
+        //$server->close($fd);
+        //echo "onReceive..." . "\n";
+        //return 'copy that';
     }
 
     /**

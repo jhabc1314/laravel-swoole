@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 /**
  * Created by PhpStorm.
@@ -16,10 +15,11 @@ if (file_exists(__DIR__ . '/autoload.php')) {
 
 
 if ($argv[1] == 'server') {
-    $server = new \Jackdou\Swoole\Tests\testRpc();
+    $server = new \JackDou\Swoole\Tests\testRpc();
     $server->run();
 } else {
     $client = new \JackDou\Swoole\Tests\testClient();
-    $client->run('hello world');
+    $res = $client->run('hello world');
+    var_dump($res);
 }
 

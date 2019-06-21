@@ -1,5 +1,5 @@
 <?php
-namespace Jackdou\Swoole\Services;
+namespace JackDou\Swoole\Services;
 
 use JackDou\Services\SwooleSocket;
 use Swoole\Http\Request;
