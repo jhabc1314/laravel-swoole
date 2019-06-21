@@ -34,4 +34,9 @@ class SwooleServiceProvider extends ServiceProvider
             'swoole:socket',
         ]);
     }
+
+    public function provides()
+    {
+        return ['swoole'];
+    }
 }
