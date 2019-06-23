@@ -2,4 +2,5 @@
 .idea
 server.pid
 swoole.log
+php_errors.log
 

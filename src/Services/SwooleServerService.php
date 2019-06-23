@@ -13,28 +13,45 @@ class SwooleServerService extends SwooleService
     }
 
     /**
-     * 启动server服务
+     * 获取 TCP server 实例
      */
-    public function boot()
+    public function initServer()
     {
-        $mode = $this->config['mode'] ?: SWOOLE_PROCESS;
-        $sock_type = $this->config['sock_type'] ?: SWOOLE_TCP;
         $this->server = new Server($this->host, $this->port);
-        $setting = array_filter($this->config['setting'], function ($item) {
+    }
+
+    public function initSetting()
+    {
+        $setting = array_filter(self::$config['setting'], function ($item) {
             return $item !== null;
         });
-        print_r($setting);
-        ini_set("error_log", __DIR__ . '/../../php_errors.log');
-        $this->server->set($setting);
 
+        defined(TEST_SWOOLE_DEBUG) and
+        ini_set("error_log", __DIR__ . '/../../php_errors.log');
+
+        $this->server->set($setting);
+    }
+
+    public function initEvent()
+    {
         $event_list = [
-            'connect', 'start', 'shutdown', 'workerstart', 'workerstop',
-            'receive', 'close', 'task', 'finish', 'managerstart', 'managerstop',
+            'connect', 'start', 'shutdown', 'workerStart', 'workerStop',
+            'receive', 'close', 'task', 'finish', 'managerStart', 'managerStop',
         ];
 
         foreach ($event_list as $event) {
             $this->server->on($event, [$this, "on" . ucfirst($event)]);
         }
+    }
+
+    /**
+     * 启动server服务
+     */
+    public function boot()
+    {
+        $this->initServer();
+        $this->initSetting();
+        $this->initEvent();
         $this->server->start();
     }
 
@@ -46,7 +63,7 @@ class SwooleServerService extends SwooleService
     public function onStart(Server $server)
     {
         //Log::info("onStart, master_pid: " . $server->master_pid);
-        swoole_set_process_name($this->config['name'] . '_master');
+        //cli_set_process_title($this->config['name'] . '_master');
         echo "onStart..." . $server->master_pid . "\n";
     }
 
@@ -69,7 +86,7 @@ class SwooleServerService extends SwooleService
     public function onWorkerStart(Server $server, $worker_id)
     {
         $p_type = $server->taskworker ? "_task" : "_worker";
-        swoole_set_process_name($this->config['name'] . $p_type);
+        //cli_set_process_title($this->config['name'] . $p_type);
 
         echo "onWorkerStart,this is a $p_type..." . $worker_id . "\n";
     }
@@ -129,20 +146,16 @@ class SwooleServerService extends SwooleService
         echo "onReceive...\n";
         //校验，解包，使用默认
         //处理请求。。。
-        //echo $data . "\n";
-        $receive = substr($data, 4);
-        //echo $receive . "\n";
-        $response = 'i am coming';
-        $receive .= "!\r\n";
-        $res = pack('N', strlen($receive)) . $receive;
-
-        if (!$server->send($fd, $res)) {
-            echo 'send fail...';
-        };
-        echo 123;
-        //$server->close($fd);
-        //echo "onReceive..." . "\n";
-        //return 'copy that';
+        try {
+            $receive = SwooleRequestService::unpack($data);
+            $result = SwooleRequestService::call($receive);
+            $response = SwooleRequestService::pack($result);
+            $server->send($fd, $response);
+        } catch (\Exception $exception) {
+            //出现错误了，发送错误默认数据
+            $server->send($fd, SwooleRequestService::errorResponse($exception->getMessage()));
+        }
+        $server->close($fd);
     }
 
     /**
@@ -167,7 +180,6 @@ class SwooleServerService extends SwooleService
      */
     public function onTask(Server $server, int $task_id, int $src_worker_id, $data)
     {
-        swoole_set_process_name($this->config['name'] . '_task');
         echo "onTask..." . "\n";
     }
 
@@ -205,7 +217,7 @@ class SwooleServerService extends SwooleService
      */
     public function onManagerStart(Server $server)
     {
-        swoole_set_process_name($this->config['name'] . '_manager');
+        //cli_set_process_title($this->config['name'] . '_manager');
         echo "onManagerStart..." . "\n";
     }
 

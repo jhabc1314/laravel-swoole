@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c6426c25e41e941c0dc99cf33800fa3f",
+    "content-hash": "febaa0053283dfc937a25fb625fbd739",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -579,7 +579,25 @@
                     "Monolog\\": "src/Monolog"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/"
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "http://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "time": "2018-11-05T09:00:11+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -2495,36 +2513,7 @@
             "time": "2019-06-15T22:40:20+00:00"
         }
     ],
-    "packages-dev": [
-        {
-            "name": "swoft/swoole-ide-helper",
-            "version": "v4.2.12",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/swoft-cloud/swoole-ide-helper.git",
-                "reference": "912a2c5db04c859531d7e89a1a985bb63354fe8d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/swoft-cloud/swoole-ide-helper/zipball/912a2c5db04c859531d7e89a1a985bb63354fe8d",
-                "reference": "912a2c5db04c859531d7e89a1a985bb63354fe8d",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "ide helper for Swoft and Swoole",
-            "keywords": [
-                "ide-helper",
-                "php",
-                "swoft",
-                "swoole"
-            ],
-            "time": "2019-01-06T11:09:21+00:00"
-        }
-    ],
+    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],

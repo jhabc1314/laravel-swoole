@@ -20,7 +20,6 @@
         }
     },
     "require-dev": {
-        "swoft/swoole-ide-helper": "^4.2"
     },
     "extra": {
         "laravel": {

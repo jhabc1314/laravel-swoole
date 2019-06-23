@@ -19,7 +19,7 @@ if ($argv[1] == 'server') {
     $server->run();
 } else {
     $client = new \JackDou\Swoole\Tests\testClient();
-    $res = $client->run('hello world');
-    var_dump($res);
+    $res = $client->run($argv[2] ?: 'hello world');
+    print_r($res);
 }
 

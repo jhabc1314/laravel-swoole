@@ -9,6 +9,7 @@
 namespace JackDou\Swoole\Tests;
 
 use JackDou\Swoole\Services\SwooleClientService;
+use JackDou\Swoole\Services\SwooleRequestService;
 
 class testClient extends Test
 {
@@ -16,6 +17,10 @@ class testClient extends Test
     public function run($data)
     {
         $client = new SwooleClientService();
-        $client->send($data);
+        $data = SwooleRequestService::getRequest([
+            testApp::class,
+            'func1'
+        ], [$data, 'hehe!']);
+        return $client->send($data);
     }
 }
