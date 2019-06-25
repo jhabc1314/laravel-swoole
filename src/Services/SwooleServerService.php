@@ -49,12 +49,12 @@ class SwooleServerService extends SwooleService
 
     public function reload()
     {
-        posix_kill(file_get_contents(self::$config['pid_file']), SIGUSR1);
+        posix_kill(file_get_contents(self::$config['setting']['pid_file']), SIGUSR1);
     }
 
     public function stop()
     {
-        posix_kill(file_get_contents(self::$config['pid_file']), SIGTERM);
+        posix_kill(file_get_contents(self::$config['setting']['pid_file']), SIGTERM);
     }
 
 

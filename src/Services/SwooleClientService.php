@@ -40,7 +40,7 @@ class SwooleClientService extends SwooleService
      *
      * @return $this
      */
-    public function call(string $call, array $params)
+    public function call(string $call, ...$params)
     {
         $this->connect()
             ->send($call, $params);

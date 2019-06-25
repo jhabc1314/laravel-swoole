@@ -36,7 +36,7 @@ class SwooleServiceProvider extends ServiceProvider
         ]);
 
         //注册 facade
-        $this->app->bind('client', function () {
+        $this->app->bind('service', function () {
             return new SwooleClientService();
         });
     }
