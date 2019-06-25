@@ -20,6 +20,7 @@
         }
     },
     "require-dev": {
+        "eaglewu/swoole-ide-helper": "dev-master"
     },
     "extra": {
         "laravel": {

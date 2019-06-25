@@ -26,8 +26,7 @@ class SwooleService
 
     public function __construct()
     {
-        //$this->config = config('swoole.server');
-        $config = require (__DIR__ . '/../config/swoole.php');
+        $config = !defined('TEST_SWOOLE_DEBUG') ? config('swoole') : require (__DIR__ . '/../config/swoole.php');
         self::$config = $config['server'];
         $this->host = self::$config['host'];
         $this->port = self::$config['port'];

@@ -8,7 +8,6 @@
 
 namespace JackDou\Swoole\Tests;
 
-define('TEST_SWOOLE_DEBUG', 1);
 
 class Test
 {

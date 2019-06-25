@@ -16,11 +16,33 @@ class testClient extends Test
 
     public function run($data)
     {
+        try {
+            $client = new SwooleClientService();
+            $client->initClient()
+                ->initSetting()
+                ->connect();
+            return $client->send([
+                testApp::class,
+                'func1'
+            ], [$data, 'hehe!'])->getResult();
+
+        } catch (\Exception $exception) {
+
+        }
+
+
+
+    }
+
+    public function run2($data)
+    {
         $client = new SwooleClientService();
-        $data = SwooleRequestService::getRequest([
-            testApp::class,
-            'func1'
-        ], [$data, 'hehe!']);
-        return $client->send($data);
+        $client->initClient()
+            ->initSetting()
+            ->connect();
+        return $client->send([
+            new testApp(),
+            'func2'
+        ], [$data])->getResult();
     }
 }

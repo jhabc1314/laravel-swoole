@@ -72,9 +72,11 @@ class SwooleRequestService extends SwooleService
     }
 
     /**
+     * 组合客户端发起请求的数据结构，待打包的数据
      *
-     * @param array $call_func [name::class, function_name]
+     * @param array $call_func 静态方法 [name::class, function_name]， 非静态[new class(), function_name]
      * @param array $params
+     *
      * @return array
      */
     public static function getRequest(array $call_func, array $params)
@@ -85,6 +87,13 @@ class SwooleRequestService extends SwooleService
         ];
     }
 
+    /**
+     * 系统发送错误时发送默认的响应结构
+     *
+     * @param string $err_msg
+     *
+     * @return string
+     */
     public static function errorResponse($err_msg = '')
     {
         return self::pack(['msg' => $err_msg, 'code' => -99]);

@@ -7,6 +7,7 @@
  */
 namespace JackDou\Swoole\Tests;
 
+
 class testRpc extends Test
 {
     public function __construct()
@@ -18,6 +19,9 @@ class testRpc extends Test
     public function run()
     {
         $server = new \JackDou\Swoole\Services\SwooleServerService();
-        $server->boot();
+        $server->initServer()
+            ->initSetting()
+            ->initEvent(new testEvent())
+            ->boot();
     }
 }

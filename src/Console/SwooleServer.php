@@ -2,6 +2,7 @@
 namespace Jackdou\Swoole\Console;
 
 use Illuminate\Console\Command;
+use JackDou\Swoole\Services\SwooleEventService;
 use Jackdou\Swoole\Services\SwooleServerService;
 
 class SwooleServer extends Command
@@ -13,14 +14,17 @@ class SwooleServer extends Command
      *
      * @var string
      */
-    protected $signature = 'swoole:server';
+    protected $signature = 'swoole:server 
+                            {start:启动本地 server 服务}
+                            {stop:停止本地 server 服务}
+                            {reload:平滑重启所有工作进程}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '启动一个 swoole server';
+    protected $description = '注册 swoole tcp server';
 
     public function __construct(SwooleServerService $server)
     {
@@ -35,7 +39,10 @@ class SwooleServer extends Command
      */
     public function handle()
     {
-        $this->server->registerServer();
-        $this->server->server->start();
+        $this->server->initServer()
+            ->initSetting()
+            ->initEvent(new SwooleEventService())
+            ->boot();
+        return true;
     }
 }
