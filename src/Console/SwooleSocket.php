@@ -2,7 +2,7 @@
 namespace JackDou\Swoole\Console;
 
 use Illuminate\Console\Command;
-use Jackdou\Swoole\Services\SwooleSocketService;
+use JackDou\Swoole\Services\SwooleSocketService;
 
 class SwooleSocket extends Command
 {

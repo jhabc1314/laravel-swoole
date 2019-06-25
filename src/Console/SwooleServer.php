@@ -3,7 +3,7 @@ namespace JackDou\Swoole\Console;
 
 use Illuminate\Console\Command;
 use JackDou\Swoole\Services\SwooleEventService;
-use Jackdou\Swoole\Services\SwooleServerService;
+use JackDou\Swoole\Services\SwooleServerService;
 
 class SwooleServer extends Command
 {
