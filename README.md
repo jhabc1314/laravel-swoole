@@ -19,8 +19,7 @@
      - `php artisan swoole:server start/stop/reload` //开启/关闭/重启 tcp server
      - `php artisan swoole:socket` //开启一个webSocket服务
 - 发送请求
-
-    
+        
     use JackDou\Swoole\Facade\Service;
     ...
     $res = Service::getInstance()
