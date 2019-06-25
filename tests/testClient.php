@@ -18,7 +18,7 @@ class testClient extends Test
     {
         try {
             $client = new SwooleClientService();
-            return $client->getInstance()->call("testApp::func1", [$data, 'hehe!'])->getResult();
+            return $client->getInstance()->call("testApp::func1", $data, 'hehe!')->getResult();
         } catch (\Exception $exception) {
 
         }

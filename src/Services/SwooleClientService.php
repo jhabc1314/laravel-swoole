@@ -131,10 +131,16 @@ class SwooleClientService extends SwooleService
      */
     public function getResult($timeout = 0.5)
     {
-        $recv = $this->client->recv();
-        $this->client->close();
+        try {
+            $recv = $this->client->recv();
+            $this->client->close();
 
-        $response = SwooleRequestService::unpack($recv);
+            $response = SwooleRequestService::unpack($recv);
+        } catch (\Throwable $throwable) {
+            error_log($throwable->getMessage());
+            return false;
+        }
+
         return $response;
     }
 
