@@ -2,6 +2,7 @@
 
 namespace JackDou\Swoole\Services;
 
+use Illuminate\Support\Facades\Storage;
 use Swoole\Server;
 
 class SwooleServerService extends SwooleService
@@ -49,12 +50,12 @@ class SwooleServerService extends SwooleService
 
     public function reload()
     {
-
+        posix_kill(Storage::get('log/server.pid'), SIGUSR1);
     }
 
     public function stop()
     {
-
+        posix_kill(Storage::get('log/server.pid'), SIGTERM);
     }
 
 
