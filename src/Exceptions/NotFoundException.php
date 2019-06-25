@@ -7,7 +7,7 @@
  * Time: 17:55
  */
 
-namespace Jackdou\Swoole\Exceptions;
+namespace JackDou\Swoole\Exceptions;
 
 class NotFoundException extends \Exception
 {

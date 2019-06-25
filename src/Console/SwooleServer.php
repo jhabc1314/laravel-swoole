@@ -1,5 +1,5 @@
 <?php
-namespace Jackdou\Swoole\Console;
+namespace JackDou\Swoole\Console;
 
 use Illuminate\Console\Command;
 use JackDou\Swoole\Services\SwooleEventService;
