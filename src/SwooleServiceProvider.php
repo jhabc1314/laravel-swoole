@@ -23,10 +23,10 @@ class SwooleServiceProvider extends ServiceProvider
         );
 
         //注册一个服务
-        $this->app->singleton('swoole:server', 'Jackdou\Swoole\Console\SwooleServer');
+        $this->app->singleton('swoole:server', 'JackDou\Swoole\Console\SwooleServer');
 
         //注册web socket 服务
-        $this->app->singleton('swoole:socket', 'Jackdou\Swoole\Console\SwooleSocket');
+        $this->app->singleton('swoole:socket', 'JackDou\Swoole\Console\SwooleSocket');
 
         //注册服务命令
         $this->commands([
