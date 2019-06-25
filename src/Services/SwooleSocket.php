@@ -10,6 +10,8 @@ namespace JackDou\Swoole\Services;
 
 class SwooleSocket
 {
+    public $server;
+
     public $config;
 
     public $ip;
@@ -19,7 +21,7 @@ class SwooleSocket
     public function __construct()
     {
         $this->config = config('swoole.socket');
-        $this->ip = $this->config['ip'];
+        $this->ip = $this->config['host'];
         $this->port = $this->config['port'];
     }
 
