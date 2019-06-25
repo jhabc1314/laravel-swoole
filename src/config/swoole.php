@@ -15,6 +15,7 @@ return [
         'host' => '127.0.0.1', //监听的本机ip，如果需要局域网通信则需要监听局域网ip
         'port' => '8820',
         'serialize_type' => 1, //序列化类型 1 serialize 2 json
+        'namespace' => !defined('TEST_SWOOLE_DEBUG') ? "App\\Service\\" : "JackDou\\Swoole\\Tests\\",//服务调用业务代码所在目录
         'setting' => [
             'worker_num' => swoole_cpu_num() + 1, //work 进程数，内部采用协程，设置和cpu核数一致或多一个
             'max_request' => 1000, //同步无状态的server work 进程超过此最大请求数后会自动退出，释放内存

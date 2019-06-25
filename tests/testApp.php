@@ -10,10 +10,6 @@ namespace JackDou\Swoole\Tests;
 
 class testApp
 {
-    public function func2($p1)
-    {
-        return self::response($p1 . 'yes!');
-    }
 
     public static function func1($p1, $p2)
     {

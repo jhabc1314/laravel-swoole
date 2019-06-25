@@ -24,7 +24,5 @@ if ($argv[1] == 'server') {
     $client = new \JackDou\Swoole\Tests\testClient();
     $res = $client->run($argv[2] ?: 'hello world');
     print_r($res);
-    $res = $client->run2($argv[2] ?: 'hello world');
-    print_r($res);
 }
 

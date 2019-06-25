@@ -64,7 +64,7 @@ class SwooleRequestService extends SwooleService
     public static function call($request)
     {
         try {
-            $result = call_user_func_array($request[self::FUNC], $request[self::PARAMS]);
+            $result = call_user_func_array(self::$config['namespace'] . $request[self::FUNC], $request[self::PARAMS]);
         } catch (\Throwable $exception) {
             throw new SwooleRequestException('call error:' . $exception->getMessage());
         }
@@ -74,12 +74,12 @@ class SwooleRequestService extends SwooleService
     /**
      * 组合客户端发起请求的数据结构，待打包的数据
      *
-     * @param array $call_func 静态方法 [name::class, function_name]， 非静态[new class(), function_name]
+     * @param string $call_func testClass::testfunc
      * @param array $params
      *
      * @return array
      */
-    public static function getRequest(array $call_func, array $params)
+    public static function getRequest(string $call_func, array $params)
     {
         return [
             self::FUNC => $call_func,

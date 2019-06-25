@@ -14,9 +14,37 @@ use Swoole\Client;
 class SwooleClientService extends SwooleService
 {
 
+    public $host;
+    public $port;
+
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public function getInstance($name = 'swoole')
+    {
+        $this->initClient()
+            ->initSetting()
+            ->selectServer($name);
+        return $this;
+    }
+
+
+    /**
+     * 调用服务
+     * @param string $call
+     * @param array $params
+     *
+     * @throws SwooleRequestException
+     *
+     * @return $this
+     */
+    public function call(string $call, array $params)
+    {
+        $this->connect()
+            ->send($call, $params);
+        return $this;
     }
 
     /**
@@ -42,6 +70,19 @@ class SwooleClientService extends SwooleService
     }
 
     /**
+     * 选择调用的server,多台ip根据算法随机选择
+     *
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function selectServer($name = 'swoole')
+    {
+        //TODO
+        return $this;
+    }
+
+    /**
      * 连接server
      *
      * @return $this
@@ -60,14 +101,14 @@ class SwooleClientService extends SwooleService
     /**
      * 发送需要执行的请求数据
      *
-     * @param array $call 静态 [service::class, function] 非静态 [new class, function]
+     * @param string $call serviceClass::func
      * @param array $params 请求的参数
      *
      * @return $this
      *
      * @throws SwooleRequestException
      */
-    public function send(array $call, array $params)
+    public function send(string $call, array $params)
     {
         $request = SwooleRequestService::getRequest($call, $params);
         $data = SwooleRequestService::pack($request);

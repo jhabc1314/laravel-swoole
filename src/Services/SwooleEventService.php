@@ -118,7 +118,6 @@ class SwooleEventService extends SwooleService
     public function onReceive(Server $server, $fd, $reactor_id, $data)
     {
         echo "onReceive...\n";
-        //校验，解包，使用默认
         //处理请求。。。
         try {
             $receive = SwooleRequestService::unpack($data);

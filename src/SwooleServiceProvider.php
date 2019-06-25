@@ -3,6 +3,7 @@
 namespace JackDou\Swoole;
 
 use Illuminate\Support\ServiceProvider;
+use JackDou\Swoole\Services\SwooleClientService;
 
 class SwooleServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,11 @@ class SwooleServiceProvider extends ServiceProvider
             'swoole:server',
             'swoole:socket',
         ]);
+
+        //注册 facade
+        $this->app->bind('client', function () {
+            return new SwooleClientService();
+        });
     }
 
     public function provides()
