@@ -1,7 +1,6 @@
 <?php
 namespace JackDou\Swoole\Services;
 
-use JackDou\Services\SwooleSocket;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use \Swoole\WebSocket\Server;

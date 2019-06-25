@@ -6,7 +6,7 @@
  * Time: 下午8:11
  */
 
-namespace JackDou\Services;
+namespace JackDou\Swoole\Services;
 
 class SwooleSocket
 {
