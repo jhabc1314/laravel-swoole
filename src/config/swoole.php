@@ -24,8 +24,8 @@ return [
             'dispatch_mode' => 3, //数据包分发模式，具体参见文档
             'daemonize' => false, //守护进程模式,关闭，使用supervisor管理比较合适
             'backlog' => 128, //同时可以保持的最大等待连接数
-            'log_file' => !defined('TEST_SWOOLE_DEBUG') ? storage_path('log/swoole.log') : __DIR__ . '/../../swoole.log',
-            'pid_file' => !defined('TEST_SWOOLE_DEBUG') ? storage_path('log/server.pid') : __DIR__ . '/../../server.pid',
+            'log_file' => !defined('TEST_SWOOLE_DEBUG') ? storage_path('logs/swoole.log') : __DIR__ . '/../../swoole.log',
+            'pid_file' => !defined('TEST_SWOOLE_DEBUG') ? storage_path('logs/server.pid') : __DIR__ . '/../../server.pid',
             'enable_coroutine' => true, //默认使用协程
             'max_coroutine' => 3000, //默认3000
             'task_enable_coroutine' => true, //协程支持任务进程
