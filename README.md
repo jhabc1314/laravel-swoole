@@ -20,12 +20,12 @@
      - `php artisan swoole:socket` //开启一个webSocket服务
 - 发送请求
     
-    use JackDou\Swoole\Facade\Service;
-    ...
-    $res = Service::getInstance()
+        use JackDou\Swoole\Facade\Service;
+        ...
+        $res = Service::getInstance()
             ->call('TestService::getInfo', $param1,$param2...)
             ->getResult();
-    //注意：调用的方法必须为静态，默认类的存放目录为app/Service，可以在swoole.php内修改
+       //注意：调用的方法必须为静态，默认类的存放目录为app/Service，可以在swoole.php内修改
     
 - 建议
 
