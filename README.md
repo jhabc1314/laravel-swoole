@@ -30,4 +30,4 @@
 - 建议
 
     - 推荐使用 `supervisor` 管理 `swoole` 进程
-    - 使用问题请联系 `jh1139209675@gmail.com`
+    - 使用问题请联系 `jackdoujiang@qq.com`
