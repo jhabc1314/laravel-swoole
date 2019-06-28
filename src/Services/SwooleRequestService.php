@@ -63,6 +63,9 @@ class SwooleRequestService extends SwooleService
      */
     public static function call($request)
     {
+        if (strtolower($request[self::FUNC]) == 'ping') {
+            return "pong";
+        }
         try {
             $result = call_user_func_array(self::$config['namespace'] . $request[self::FUNC], $request[self::PARAMS]);
         } catch (\Throwable $exception) {
@@ -79,7 +82,7 @@ class SwooleRequestService extends SwooleService
      *
      * @return array
      */
-    public static function getRequest(string $call_func, array $params)
+    public static function getRequest(string $call_func, ?array $params = null) :array
     {
         return [
             self::FUNC => $call_func,

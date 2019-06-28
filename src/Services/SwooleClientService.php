@@ -1,122 +1,195 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: jiangheng
+ * 同步客户端
+ *
+ * User: jackdou
  * Date: 19-6-20
  * Time: 下午8:08
  */
 
 namespace JackDou\Swoole\Services;
 
+use Illuminate\Support\Facades\Log;
+use JackDou\Swoole\Exceptions\NotFoundException;
 use JackDou\Swoole\Exceptions\SwooleRequestException;
 use Swoole\Client;
 
 class SwooleClientService extends SwooleService
 {
 
+    /**
+     * 接收响应数据失败
+     */
+    const ERR_RECV = 1003;
+
+    /**
+     * 服务端主动关闭连接
+     */
+    const ERR_SERVER_CLOSE = 1004;
+
+    /**
+     * 连接超时，服务可能不可用或者连接满了
+     */
+    const ERR_CONNECT_TIMEOUT = 1005;
+
+    /**
+     * 发送请求数据失败
+     */
+    const ERR_SEND = 1006;
+
+    /**
+     * 复用服务连接
+     *
+     * @var array
+     */
+    public static $service;
+
+    /**
+     * @var string
+     */
+    public $server_name;
+
+    /**
+     * @var array 待发送的数据
+     */
+    public $wait_send;
+
     public $host;
     public $port;
 
-    public function __construct()
+    /**
+     * 指定要请求的服务名称
+     *
+     * @param string $name
+     *
+     * @return $this
+     *
+     * @throws \JackDou\Swoole\Exceptions\NotFoundException
+     */
+    public function getInstance(string $name = 'swoole')
     {
-        parent::__construct();
-    }
-
-    public function getInstance($name = 'swoole')
-    {
-        $this->initClient()
-            ->initSetting()
-            ->selectServer($name);
+        if (empty($name)) {
+            throw new NotFoundException("server name is empty");
+        }
+        $this->server_name = $name;
         return $this;
     }
 
 
     /**
      * 调用服务
+     *
      * @param string $call
      * @param array $params
-     *
-     * @throws SwooleRequestException
      *
      * @return $this
      */
     public function call(string $call, ...$params)
     {
-        $this->connect()
-            ->send($call, $params);
+        $this->wait_send = SwooleRequestService::getRequest($call, $params);
         return $this;
     }
 
     /**
      * 初始化客户端
      *
-     * @return $this
-     */
-    public function initClient()
-    {
-        $this->client = new Client(SWOOLE_TCP);
-        return $this;
-    }
-
-    /**
-     * 初始化设置项
+     * @param $timeout float
      *
-     * @return $this
+     * @throws SwooleRequestException
+     *
+     * @return Client
      */
-    public function initSetting()
+    public function initClient($timeout = 0.1) :Client
     {
-        $this->client->set($this->defaultConfig);
-        return $this;
+        $client = new Client(SWOOLE_TCP);
+        $client->set($this->defaultConfig);
+        if (!$client->connect($this->host, $this->port, $timeout)) {
+            throw new SwooleRequestException("connect {$this->server_info()} timeout", self::ERR_CONNECT_TIMEOUT);
+        }
+        return self::$service[$this->server_name] = $client;
     }
 
     /**
      * 选择调用的server,多台ip根据算法随机选择
+     * 可以继承此类自定义查找节点的方式
      *
-     * @param string $name
+     * @param float $timeout
      *
-     * @return $this
+     * @throws NotFoundException
+     * @throws SwooleRequestException
+     *
+     * @return Client
      */
-    public function selectServer($name = 'swoole')
+    public function selectServer($timeout = 0.5) :Client
     {
-        //TODO
-        return $this;
+        //如果有已经存在的连接并且可用就直接复用
+        if (isset(self::$service[$this->server_name]) && self::$service[$this->server_name]->isConnected()) {
+            return self::$service[$this->server_name];
+        }
+        unset(self::$service[$this->server_name]);
+        //根据不同配置选择节点
+        $server_node = config("server_node.{$this->server_name}");
+        if (empty($server_node)) {
+            throw new NotFoundException("cant find {$this->server_name} server node config");
+        }
+        $this->choiceNode($server_node);
+        return $this->initClient($timeout);
     }
 
     /**
-     * 连接server
+     * 从给到的节点列表中选择一个
      *
-     * @return $this
+     * @param array $server_node
+     * @param string $name
      *
+     * @throws NotFoundException
      * @throws SwooleRequestException
      *
+     * @return bool|string
+     *
      */
-    public function connect()
+    public function choiceNode(array $server_node)
     {
-        if (!$this->client->connect($this->host, $this->port)) {
-            throw new SwooleRequestException('client connect to server error');
+        $online = [];
+        $weight = 0;
+        foreach ($server_node as $node) {
+            if ($node['status'] == 'online') {
+                $node['weight_range'] = [$weight, ($weight += $node['weight'])];
+                $online[] = $node;
+            }
         }
-        return $this;
+        if (empty($online)) {
+            throw new NotFoundException("can not find {$this->server_name} online node");
+        }
+        if ($weight < 0) {
+            throw new SwooleRequestException("{$this->server_name} node weight too small, it must >= 0 at least");
+        }
+        //0-$weight rand a number
+        $choice = mt_rand(0, $weight);
+        foreach ($online as $node) {
+            if ($choice >= $node['weight_range'][0] && $choice <= $node['weight_range'][1]) {
+                $this->host = $node['ip'];
+                $this->port = $node['port'];
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * 发送需要执行的请求数据
      *
-     * @param string $call serviceClass::func
-     * @param array $params 请求的参数
-     *
-     * @return $this
+     * @param Client $client
      *
      * @throws SwooleRequestException
      */
-    public function send(string $call, array $params)
+    public function send(Client $client)
     {
-        $request = SwooleRequestService::getRequest($call, $params);
-        $data = SwooleRequestService::pack($request);
-        $res = $this->client->send($data);
+        $data = SwooleRequestService::pack($this->wait_send);
+        $res = $client->send($data);
         if ($res === false) {
-            throw new SwooleRequestException(socket_strerror($this->client->errCode));
+            throw new SwooleRequestException(socket_strerror($client->errCode), self::ERR_SEND);
         }
-        return $this;
     }
 
     /**
@@ -125,24 +198,57 @@ class SwooleClientService extends SwooleService
      * @param float $timeout
      *
      * @return mixed
-     *
-     * @throws SwooleRequestException
-     *
      */
     public function getResult($timeout = 0.5)
     {
         try {
-            $recv = $this->client->recv();
-            $this->client->close();
-
+            //寻找服务节点
+            $client = $this->selectServer($timeout);
+            //发送数据
+            $this->send($client);
+            //同步接收响应
+            $recv = $client->recv();
+            if ($recv === "") {
+                //服务端主动关闭连接
+                throw new SwooleRequestException("{$this->server_info()} close the connect", self::ERR_SERVER_CLOSE);
+            }
+            //接收数据失败
+            if ($recv === false) {
+                throw new SwooleRequestException("recv {$this->server_info()} data error:" . $client->errCode, self::ERR_RECV);
+            }
             $response = SwooleRequestService::unpack($recv);
-        } catch (\Throwable $throwable) {
-            error_log($throwable->getMessage());
+        } catch (\Throwable $e) {
+            isset($client) and $client->close();
+            //失败以后删除保存的数据
+            if (isset(self::$service[$this->server_name])) {
+                unset(self::$service[$this->server_name]);
+            }
+            Log::error("SwooleClientService:" . __FUNCTION__ . ":line:" . $e->getLine() . $e->getMessage() . $e->getCode());
             return false;
         }
-
         return $response;
     }
 
+    public function server_info()
+    {
+        return "server {$this->server_name}:{$this->host} ";
+    }
 
+
+    /**
+     * 节点机器存活检测
+     * Service::getInstance()->ping()->getResult();
+     */
+    public function ping()
+    {
+        $this->wait_send = SwooleRequestService::getRequest("ping");
+        return $this;
+    }
+
+    public function __destruct()
+    {
+        self::$service = null;
+        // TODO: Implement __destruct() method.
+        unset($this->server_name, $this->host, $this->port, $this->wait_send);
+    }
 }

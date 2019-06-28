@@ -1,21 +1,23 @@
 <?php
 return [
     /*
-     * web socket 配置
+     * web socket 配置 暂时不可用
      */
     'socket' => [
         'host' => '0.0.0.0',
         'port' => 9501,
     ],
+
     /*
      * 具体的参数详细说明请参见官方文档 https://wiki.swoole.com/wiki/page/274.html
      */
     'server' => [
         'name' => 'swoole', //服务名称，启动成功后可以通过 ps aux | grep name 查看启动的进程
         'host' => '127.0.0.1', //监听的本机ip，如果需要局域网通信则需要监听局域网ip
-        'port' => '8820',
+        'port' => 8820,
         'serialize_type' => 1, //序列化类型 1 serialize 2 json
-        'namespace' => !defined('TEST_SWOOLE_DEBUG') ? "App\\Service\\" : "JackDou\\Swoole\\Tests\\",//服务调用业务代码所在目录
+        'namespace' => "App\\Services\\",//服务调用业务代码命名空间
+        'server_node_conf' => config_path('server_node.php'),//服务节点所在配置文件
         'setting' => [
             'worker_num' => swoole_cpu_num() + 1, //work 进程数，内部采用协程，设置和cpu核数一致或多一个
             'max_request' => 1000, //同步无状态的server work 进程超过此最大请求数后会自动退出，释放内存
@@ -24,8 +26,8 @@ return [
             'dispatch_mode' => 3, //数据包分发模式，具体参见文档
             'daemonize' => false, //守护进程模式,关闭，使用supervisor管理比较合适
             'backlog' => 128, //同时可以保持的最大等待连接数
-            'log_file' => !defined('TEST_SWOOLE_DEBUG') ? storage_path('logs/swoole.log') : __DIR__ . '/../../swoole.log',
-            'pid_file' => !defined('TEST_SWOOLE_DEBUG') ? storage_path('logs/server.pid') : __DIR__ . '/../../server.pid',
+            'log_file' => storage_path('logs/swoole.log'),
+            'pid_file' => storage_path('logs/server.pid'),
             'enable_coroutine' => true, //默认使用协程
             'max_coroutine' => 3000, //默认3000
             'task_enable_coroutine' => true, //协程支持任务进程

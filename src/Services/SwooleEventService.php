@@ -121,14 +121,15 @@ class SwooleEventService extends SwooleService
         //处理请求。。。
         try {
             $receive = SwooleRequestService::unpack($data);
+
             $result = SwooleRequestService::call($receive);
             $response = SwooleRequestService::pack($result);
             $server->send($fd, $response);
         } catch (\Exception $exception) {
             //出现错误了，发送错误默认数据
             $server->send($fd, SwooleRequestService::errorResponse($exception->getMessage()));
+            $server->close($fd);
         }
-        $server->close($fd);
     }
 
     /**

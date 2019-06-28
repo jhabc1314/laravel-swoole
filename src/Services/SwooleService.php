@@ -1,20 +1,16 @@
 <?php
 namespace JackDou\Swoole\Services;
 
-use Swoole\Client;
 use Swoole\Server;
 
 class SwooleService
 {
+    public const VERSION = 1.1;
+
     /**
      * @var Server
      */
     public $server;
-
-    /**
-     * @var Client
-     */
-    public $client;
 
     public static $config;
 
@@ -22,28 +18,20 @@ class SwooleService
 
     public $port;
 
-    public $defaultConfig;
+    public $defaultConfig = [
+        'open_eof_check' => 1,
+        'package_eof' => "\r\n",
+        'open_length_check' => true, //开启包长检测
+        'package_length_type' => 'N', //长度类型
+        'package_body_offset' => 4, //包体偏移量
+        'package_length_offset' => 0, //协议中的包体长度字段在第几字节
+    ];
 
     public function __construct()
     {
-        $config = !defined('TEST_SWOOLE_DEBUG') ? config('swoole') : require (__DIR__ . '/../config/swoole.php');
-        self::$config = $config['server'];
+        self::$config = config('swoole.server');
         $this->host = self::$config['host'];
         $this->port = self::$config['port'];
-        $this->defaultSetting();
-        array_merge(self::$config['setting'], $this->defaultConfig);
+        self::$config['setting'] = array_merge(self::$config['setting'], $this->defaultConfig);
     }
-
-    public function defaultSetting()
-    {
-        $this->defaultConfig = [
-            'open_eof_check' => 1,
-            'package_eof' => "\r\n",
-            'open_length_check' => true, //开启包长检测
-            'package_length_type' => 'N', //长度类型
-            'package_body_offset' => 4, //包体偏移量
-            'package_length_offset' => 0, //协议中的包体长度字段在第几字节
-        ];
-    }
-
 }

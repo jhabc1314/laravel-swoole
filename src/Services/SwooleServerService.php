@@ -46,12 +46,17 @@ class SwooleServerService extends SwooleService
         $this->server->start();
     }
 
-
+    /**
+     * 热重启
+     */
     public function reload()
     {
         posix_kill(file_get_contents(self::$config['setting']['pid_file']), SIGUSR1);
     }
 
+    /**
+     * 服务停止
+     */
     public function stop()
     {
         posix_kill(file_get_contents(self::$config['setting']['pid_file']), SIGTERM);

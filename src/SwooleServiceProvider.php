@@ -3,6 +3,7 @@
 namespace JackDou\Swoole;
 
 use Illuminate\Support\ServiceProvider;
+use JackDou\Swoole\Rpc\RpcClient;
 use JackDou\Swoole\Services\SwooleClientService;
 
 class SwooleServiceProvider extends ServiceProvider
@@ -12,6 +13,7 @@ class SwooleServiceProvider extends ServiceProvider
         // Publish config files
         $this->publishes([
             __DIR__ . '/config/swoole.php' => config_path('swoole.php'),
+            __DIR__ . '/config/server_node.php' => config_path('server_node.php'),
         ]);
     }
 
@@ -21,6 +23,11 @@ class SwooleServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/swoole.php',
             'swoole'
+        );
+        //合并服务节点配置
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/server_node.php',
+            'server_node'
         );
 
         //注册一个服务
