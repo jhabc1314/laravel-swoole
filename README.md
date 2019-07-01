@@ -19,9 +19,9 @@
 - 启动服务
      - `php artisan swoole:server start/stop/reload` //开启/关闭/热重启 服务
      - `php artisan swoole:socket` //开启一个webSocket服务 * 暂不可用
-     - 使用 `ps aux | grep 'server_name' ` 可以查看启动的进程信息
-- fpm 中使用同步客户端 demo
-    - 编写服务的业务代码:默认目录为 `app/Services`,新建 TestService.php 类并添加如下内容
+     - 使用 `ps aux | grep 'your server_name' ` 可以查看启动的进程信息
+- fpm 中使用同步客户端访问微服务 demo
+    - 编写微服务的业务代码:默认目录为 `app/Services`,新建 TestService.php 类并添加如下内容
         
             namespace App\Service;
            
@@ -47,8 +47,7 @@
     - 使用中发现问题请联系 `jackdoujiang@qq.com` 或者提交 `issues`
 
 - 注意
-    - 如果改动配置或服务代码等记得 `reload` 服务进程，不然不会生效
-    - 目前 `v1.1` 为基础功能版，无服务发现等功能，需要手动在服务配置文件 `server_node.php` 中添加和删除
+    - 如果改动配置或服务代码等记得 `reload` 或重启服务进程，不然不会生效
     - 暂不支持传递图片文件等资源文件
 - 迭代计划(未实现)
     - 增加多功能服务下发配置方式并且推荐结合 jackdou/management 管理后台扩展使用
