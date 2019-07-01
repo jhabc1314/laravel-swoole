@@ -14,7 +14,7 @@ class SwooleServer extends Command
      *
      * @var string
      */
-    protected $signature = 'swoole:server {cmd=start}';
+    protected $signature = 'swoole:server {name=swoole} {cmd=start}';
 
     /**
      * The console command description.
@@ -22,9 +22,9 @@ class SwooleServer extends Command
      * @var string
      */
     protected $description = '注册 swoole tcp server
-                             start:启动本地 server 服务
-                             stop:停止本地 server 服务
-                             reload:平滑重启所有工作进程';
+                             server_name start:启动本地 server_name 服务
+                             server_name stop:停止本地 server_name 服务
+                             server_name reload:重加载 server_name 工作进程';
 
     public function __construct(SwooleServerService $server)
     {
@@ -39,12 +39,13 @@ class SwooleServer extends Command
      */
     public function handle()
     {
+        $this->server->initConfig($this->argument('name'));
         $cmd = $this->argument('cmd');
         switch (strtolower($cmd)) {
             case 'start':
                 $this->server->initServer()
                     ->initSetting()
-                    ->initEvent(new SwooleEventService())
+                    ->initEvent(new SwooleEventService($this->argument('name')))
                     ->boot();
                 break;
             case 'stop':

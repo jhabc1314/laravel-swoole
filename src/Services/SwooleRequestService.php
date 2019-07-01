@@ -1,7 +1,8 @@
 <?php
 /**
+ * 请求处理
  *
- * User: jiangheng
+ * User: jackdou
  * Date: 2019/6/23
  * Time: 13:17
  */
@@ -10,8 +11,21 @@ namespace JackDou\Swoole\Services;
 
 use JackDou\Swoole\Exceptions\SwooleRequestException;
 
-class SwooleRequestService extends SwooleService
+class SwooleRequestService
 {
+
+    /**
+     * @var array 包传输配置
+     */
+    public static $pack_config = [
+        'open_eof_check' => 1,
+        'package_eof' => "\r\n",
+        'open_length_check' => true, //开启包长检测
+        'package_length_type' => 'N', //长度类型
+        'package_body_offset' => 4, //包体偏移量
+        'package_length_offset' => 0, //协议中的包体长度字段在第几字节
+    ];
+
     const FUNC = 'func';
     const PARAMS = 'params';
 
@@ -19,12 +33,13 @@ class SwooleRequestService extends SwooleService
      * 打包数据
      *
      * @param mixed $data
+     * @param int $serialize_type
      *
      * @return string
      */
-    public static function pack($data)
+    public static function pack($data, $serialize_type = 1)
     {
-        $data = self::$config['serialize_type'] == 1 ? serialize($data) : json_encode($data);
+        $data = $serialize_type == 1 ? serialize($data) : json_encode($data);
         $response = pack('N', strlen($data)) . $data;
         $response .= "\r\n";
         return $response;
@@ -34,12 +49,13 @@ class SwooleRequestService extends SwooleService
      * 解包数据
      *
      * @param string $data
+     * @param int $serialize_type
      *
      * @return mixed
      *
      * @throws SwooleRequestException
      */
-    public static function unpack(string $data)
+    public static function unpack(string $data, $serialize_type = 1)
     {
         $receive = unpack('N', substr($data, 0, 4));
         $len = $receive[1];
@@ -49,25 +65,26 @@ class SwooleRequestService extends SwooleService
         if ($len != strlen($data)) {
             throw new SwooleRequestException("receive data length error:" . $len . strlen($data));
         }
-        return self::$config['serialize_type'] == 1 ? unserialize($data) : json_decode($data, true);
+        return $serialize_type == 1 ? unserialize($data) : json_decode($data, true);
     }
 
     /**
      * 执行调用的类函数 方法
      *
      * @param $request
+     * @param $namespace
      *
      * @throws SwooleRequestException
      *
      * @return mixed
      */
-    public static function call($request)
+    public static function call($request, $namespace)
     {
         if (strtolower($request[self::FUNC]) == 'ping') {
             return "pong";
         }
         try {
-            $result = call_user_func_array(self::$config['namespace'] . $request[self::FUNC], $request[self::PARAMS]);
+            $result = call_user_func_array($namespace . $request[self::FUNC], $request[self::PARAMS]);
         } catch (\Throwable $exception) {
             throw new SwooleRequestException('call error:' . $exception->getMessage());
         }

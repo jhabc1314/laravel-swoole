@@ -13,6 +13,10 @@ use Swoole\Server;
 class SwooleEventService extends SwooleService
 {
 
+    public function __construct(string $server_name)
+    {
+        $this->initConfig($server_name);
+    }
     /**
      * @var array
      */
@@ -120,10 +124,10 @@ class SwooleEventService extends SwooleService
         echo "onReceive...\n";
         //处理请求。。。
         try {
-            $receive = SwooleRequestService::unpack($data);
+            $receive = SwooleRequestService::unpack($data, self::$config['serialize_type']);
 
-            $result = SwooleRequestService::call($receive);
-            $response = SwooleRequestService::pack($result);
+            $result = SwooleRequestService::call($receive, self::$config['namespace']);
+            $response = SwooleRequestService::pack($result, self::$config['serialize_type']);
             $server->send($fd, $response);
         } catch (\Exception $exception) {
             //出现错误了，发送错误默认数据

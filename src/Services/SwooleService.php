@@ -1,37 +1,46 @@
 <?php
 namespace JackDou\Swoole\Services;
 
+use JackDou\Swoole\Exceptions\NotFoundException;
 use Swoole\Server;
 
 class SwooleService
 {
-    public const VERSION = 1.1;
+    /**
+     * @version 1.2
+     */
+    public const VERSION = "1.2";
 
     /**
      * @var Server
      */
     public $server;
 
-    public static $config;
+    const NODE_MANAGER = 'node_manager';
 
-    public $host;
+    protected $server_name;
 
-    public $port;
+    protected static $config;
 
-    public $defaultConfig = [
-        'open_eof_check' => 1,
-        'package_eof' => "\r\n",
-        'open_length_check' => true, //开启包长检测
-        'package_length_type' => 'N', //长度类型
-        'package_body_offset' => 4, //包体偏移量
-        'package_length_offset' => 0, //协议中的包体长度字段在第几字节
-    ];
+    protected $host;
 
-    public function __construct()
+    protected $port;
+
+    /**
+     * @param $server_name string
+     *
+     */
+    public function initConfig(string $server_name)
     {
-        self::$config = config('swoole.server');
+        $this->server_name = $server_name;
+        if ($this->server_name == self::NODE_MANAGER) {
+            self::$config = config('swoole.' . self::NODE_MANAGER);
+        } else {
+            self::$config = config('swoole.server');
+        }
         $this->host = self::$config['host'];
         $this->port = self::$config['port'];
-        self::$config['setting'] = array_merge(self::$config['setting'], $this->defaultConfig);
+        $setting = array_merge(config('swoole.servers_setting'), self::$config['setting']);
+        self::$config['setting'] = array_merge($setting, SwooleRequestService::$pack_config);
     }
 }

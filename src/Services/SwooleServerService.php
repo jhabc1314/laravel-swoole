@@ -6,11 +6,6 @@ use Swoole\Server;
 
 class SwooleServerService extends SwooleService
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * 获取 TCP server 实例
      */
@@ -61,7 +56,5 @@ class SwooleServerService extends SwooleService
     {
         posix_kill(file_get_contents(self::$config['setting']['pid_file']), SIGTERM);
     }
-
-
 
 }
