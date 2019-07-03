@@ -20,18 +20,17 @@ return [
         |--------------------------------------------------------------------------
         | 服务发现方式
         |--------------------------------------------------------------------------
-        | 1 手动，使用 server_node_conf 选项内的节点配置信息
+        | 1 手动，使用 server_node.php 文件内的节点配置信息
         | 2 统一模式，使用 jackdou/management 项目的后台下发管理 需要配合 jackdou/management 项目
         |
          */
         'node_find_type' => 1,
 
-        'server_node_conf' => config_path('server_node.php'),//服务节点所在配置文件
         'setting' => [
             'log_file' => storage_path('logs/swoole.log'),
             'pid_file' => storage_path('logs/swoole.pid'),
         ],
-        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | 节点管理服务配置
@@ -46,7 +45,6 @@ return [
         'serialize_type' => 1, //序列化类型 1 serialize 2 json
         'namespace' => "JackDou\\Management\\Services\\",//服务对应业务代码所在命名空间
         'node_find_type' => 2,
-        'node_conf_path' => storage_path('app/node_manager.conf'),//服务节点所在配置文件
         'setting' => [
             'worker_num' => 2,
             'backlog' => 128, //同时可以保持的最大等待连接数
@@ -74,6 +72,12 @@ return [
         'max_coroutine' => 3000, //默认3000
         'task_enable_coroutine' => true, //协程支持任务进程
     ],
+
+    /*
+     * 服务下发文件默认保存位置
+     * 如无特殊需要请勿修改
+     */
+    'node_conf_path' => storage_path('app/'),
 
     /*
      * web socket 配置 暂时不可用

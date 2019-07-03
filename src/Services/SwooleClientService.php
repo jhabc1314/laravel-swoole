@@ -148,7 +148,8 @@ class SwooleClientService
         if ($node_find_conf['node_find_type'] == 1) {
             $server_node = config("server_node.{$this->server_name}");
         } else {
-            $server_node = json_decode(file_get_contents($node_find_conf['node_conf_path']), true);
+            $file_path = config('swoole.node_conf_path') . $this->server_name . '.conf';
+            $server_node = json_decode(file_get_contents($file_path), true);
         }
         if (empty($server_node)) {
             throw new NotFoundException("cant find {$this->server_name} server node config");
