@@ -5,6 +5,7 @@ namespace JackDou\Swoole;
 use Illuminate\Support\ServiceProvider;
 use JackDou\Swoole\Rpc\RpcClient;
 use JackDou\Swoole\Services\SwooleClientService;
+use JackDou\Swoole\Services\SwooleCoClient;
 
 class SwooleServiceProvider extends ServiceProvider
 {

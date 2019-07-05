@@ -11,8 +11,8 @@ return [
     */
     'server' => [
         'name' => 'swoole', //服务名称，启动成功后可以通过 ps aux | grep your server name 查看启动的进程
-        'host' => '127.0.0.1', //监听的本机ip，如果需要局域网通信则需要监听局域网ip
-        'port' => 8820,
+        'host' => env('SERVER_HOST', '127.0.0.1'), //监听的本机局域网ip
+        'port' => env('SERVER_PORT', 8820),
         'serialize_type' => 1, //序列化类型 1 serialize 2 json
         'namespace' => "App\\Services\\",//服务对应业务代码所在命名空间
 
@@ -40,8 +40,8 @@ return [
     */
     'node_manager' => [
         'name' => 'node_manager', //请勿更改
-        'host' => '127.0.0.1', //监听ip，如果需要局域网通信则需要监听局域网ip
-        'port' => 8821,
+        'host' => env('SERVER_HOST', '127.0.0.1'), //监听本机局域网ip
+        'port' => env('SERVER_NODE_PORT', 8821),
         'serialize_type' => 1, //序列化类型 1 serialize 2 json
         'namespace' => "JackDou\\Management\\Services\\",//服务对应业务代码所在命名空间
         'node_find_type' => 2,

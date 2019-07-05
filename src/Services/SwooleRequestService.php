@@ -119,5 +119,10 @@ class SwooleRequestService
         return self::pack(['msg' => $err_msg, 'code' => -99]);
     }
 
+    public static function unique($server_name)
+    {
+        return $server_name . uniqid() . mt_rand(100, 999);
+    }
+
 
 }
