@@ -27,7 +27,11 @@ class SwooleService
     protected $port;
 
     /**
+     * 初始化服务配置
+     *
      * @param $server_name string
+     *
+     * @throws NotFoundException
      *
      */
     public function initConfig(string $server_name)
@@ -37,6 +41,9 @@ class SwooleService
             self::$config = config('swoole.' . self::NODE_MANAGER);
         } else {
             self::$config = config('swoole.server');
+            if (self::$config['name'] != $server_name) {
+                throw new NotFoundException("$server_name server don't exist");
+            }
         }
         $this->host = self::$config['host'];
         $this->port = self::$config['port'];
