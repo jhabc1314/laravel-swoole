@@ -20,6 +20,7 @@
         - 在 `config/server_node.php` 中可以根据自己的服务名称配置多个机器ip
         - 可设置权重和在线状态，权重越高分配到的请求也就越多
         - 配置的每个机器上都得按下面的方式启动相应的服务
+    - 如果使用 `management` 管理后台，需要将服务发现方式改为 `2`
 - 启动服务
     - v1.1 及以下：
         - `php artisan swoole:server start/stop/reload` //开启/关闭/热重启 服务
