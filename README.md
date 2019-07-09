@@ -169,4 +169,4 @@
     - 支持请求头，传递资源图片等功能
     - 支持单元测试和自动化测试
     - 服务节点检测，自动下线服务
-    - 集成 `supervisor` 自动下发配置管理
+    - 集成 `supervisor` 自动下发配置管理[在 `management` 实现](https://github.com/jhabc1314/management)
