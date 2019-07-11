@@ -45,8 +45,8 @@
     - 在项目任意可以访问的 `Controller` 中添加如下内容
                 
                 use JackDou\Swoole\Facade\Service;
-                
-                $res = Service::getInstance('swoole')->call('TestService::test', '你好')->getResult();
+                //getResult 参数为超时时间，单位秒，默认0.5秒。如果服务在0.5秒内没有返回结果则返回null
+                $res = Service::getInstance('swoole')->call('TestService::test', '你好')->getResult(0.5);
                 dd($res);
     - 浏览器中访问观察效果。
 
