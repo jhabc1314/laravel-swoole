@@ -167,10 +167,10 @@ class SwooleClientService extends SwooleClient
                 unset(self::$service[$this->server_name]);
             }
             Log::error("SwooleClientService:" . __FUNCTION__ . ":line:" . $e->getLine() . $e->getMessage() . $e->getCode());
-            if ($e instanceof SwooleRequestService) {
+            if ($e instanceof SwooleRequestException) {
                 return false;
             }
-            throw $e;
+            return null;
         }
         return $response;
     }
