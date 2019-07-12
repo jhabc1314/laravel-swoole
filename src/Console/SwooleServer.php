@@ -2,6 +2,7 @@
 namespace JackDou\Swoole\Console;
 
 use Illuminate\Console\Command;
+use JackDou\Swoole\Exceptions\NotFoundException;
 use JackDou\Swoole\Services\SwooleEventService;
 use JackDou\Swoole\Services\SwooleServerService;
 
@@ -35,6 +36,7 @@ class SwooleServer extends Command
     /**
      * Execute the console command.
      *
+     * @throws NotFoundException
      * @return mixed
      */
     public function handle()

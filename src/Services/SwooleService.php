@@ -18,6 +18,8 @@ class SwooleService
 
     const NODE_MANAGER = 'node_manager';
 
+    const CRON_MANAGER = 'cron_manager';
+
     protected $server_name;
 
     protected static $config;
@@ -37,8 +39,8 @@ class SwooleService
     public function initConfig(string $server_name)
     {
         $this->server_name = $server_name;
-        if ($this->server_name == self::NODE_MANAGER) {
-            self::$config = config('swoole.' . self::NODE_MANAGER);
+        if (in_array($this->server_name, [self::NODE_MANAGER, self::CRON_MANAGER])) {
+            self::$config = config('swoole.' . $this->server_name);
         } else {
             self::$config = config('swoole.server');
             if (self::$config['name'] != $server_name) {

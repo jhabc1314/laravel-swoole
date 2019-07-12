@@ -1,13 +1,16 @@
 <?php
 /**
- *
- * User: jiangheng
+ * EventService
+ * User: jackdou
  * Date: 2019/6/23
  * Time: 13:17
  */
 
 namespace JackDou\Swoole\Services;
 
+use Illuminate\Support\Facades\Log;
+use JackDou\Swoole\Facade\Service;
+use JackDou\Swoole\Management\CrontabService;
 use Swoole\Server;
 
 class SwooleEventService extends SwooleService
@@ -17,6 +20,7 @@ class SwooleEventService extends SwooleService
     {
         $this->initConfig($server_name);
     }
+
     /**
      * @var array
      */
@@ -63,7 +67,7 @@ class SwooleEventService extends SwooleService
      */
     public function onWorkerStart(Server $server, $worker_id)
     {
-        $p_type = $server->taskworker ? "_task" : "_worker";
+        $p_type = $server->taskworker ? "task" : "worker";
         swoole_set_process_name(self::$config['name'] . $p_type);
 
         echo "onWorkerStart,this is a $p_type..." . $worker_id . "\n";
