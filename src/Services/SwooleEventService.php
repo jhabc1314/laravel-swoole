@@ -70,6 +70,26 @@ class SwooleEventService extends SwooleService
         $p_type = $server->taskworker ? "task" : "worker";
         swoole_set_process_name(self::$config['name'] . $p_type);
 
+        //cron 重启拉取默认
+        if (self::$config['name'] == SwooleService::CRON_MANAGER && !empty(config('swoole.management_host'))) {
+            $management_host = config('swoole.management_host');
+            $crontabs = Service::getInstance(SwooleService::NODE_MANAGER, $management_host)
+                ->call('CrontabService::crontabs', $this->host)
+                ->getResult(1);
+            if (isset($crontabs['code']) && $crontabs['code'] === 0) {
+                $crontabs = $crontabs['data'];
+                foreach ($crontabs as $crontab) {
+                    $res = CrontabService::start($crontab);
+                    if ($res['code'] == 0) {
+                        $crontab = $res['data'];
+                        Service::getInstance(SwooleService::NODE_MANAGER, $management_host)
+                            ->call('CrontabService::save', $crontab)
+                            ->getResult();
+                        //TODO 通知
+                    }
+                }
+            }
+        }
         echo "onWorkerStart,this is a $p_type..." . $worker_id . "\n";
     }
 

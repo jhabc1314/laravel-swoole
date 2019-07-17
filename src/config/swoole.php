@@ -71,6 +71,7 @@ return [
         'serialize_type' => 1, //序列化类型 1 serialize 2 json
         'namespace' => "JackDou\\Swoole\\Management\\",//服务对应业务代码所在命名空间
         'node_find_type' => 2,
+        'running_log_path' => storage_path('logs/crontab/'), //运行日志记录文件
         'setting' => [
             'worker_num' => 1,
             'task_worker_num' => 0, //任务进程数，大于0即开启任务进程
