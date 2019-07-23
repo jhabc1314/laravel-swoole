@@ -164,9 +164,7 @@
     - 异步协程客户端在非密集型 `cpu io` 的场景下可以提高性能，推荐使用，但是注意异步代码的执行逻辑和编写方式
     - 暂不支持传递图片文件等资源
 - 迭代计划
-    - 增加结合 `jackdou/management` 管理后台实现多机器服务下发配置 [了解详情](https://github.com/jhabc1314/management)（v1.2.1）
+    - 增加结合 `jackdou/management` 管理后台实现多机器服务下发配置 已实现 [了解详情](https://github.com/jhabc1314/management)（v1.2.1）
     - 支持基础 `web socket` 功能
-    - 支持请求头，传递资源图片等功能
-    - 支持单元测试和自动化测试
     - 服务节点检测，自动下线服务
-    - 集成 `supervisor` 自动下发配置管理 [了解详情](http://www.jackdou.top)
+    - 集成 `supervisor` 自动下发配置管理 已实现 [了解详情](http://www.jackdou.top)
