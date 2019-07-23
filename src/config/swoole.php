@@ -119,6 +119,11 @@ return [
     'node_conf_path' => storage_path('app/'),
 
     /*
+     * 管理服务列表
+     */
+    'kernel_servers' => ['cron_manager', 'node_manager'],
+
+    /*
      * web socket 配置 暂时不可用
      */
     'socket' => [

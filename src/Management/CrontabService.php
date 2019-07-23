@@ -33,7 +33,8 @@ class CrontabService
 
             }
         }
-        $timer_id = swoole_timer_tick($crontab->cron_timer * 1000, function () use ($crontab) {
+        $timer_id = swoole_timer_tick($crontab->cron_timer * 1000, function ($timer_id, $crontab) {
+
             try {
                 $dir = config('swoole.cron_manager.running_log_path');
                 if (empty($dir)) {
@@ -60,7 +61,7 @@ class CrontabService
                     Log::error($e->getMessage());
                 }
             }
-        });
+        }, $crontab);
         if ($timer_id > 0) {
             $crontab->cron_id = $timer_id;
             $crontab->cron_node_status = 1;

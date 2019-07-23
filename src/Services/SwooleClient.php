@@ -48,17 +48,15 @@ class SwooleClient
     /**
      * 获取服务节点列表
      *
-     * @param string|null $server_name
-     *
      * @return \Illuminate\Config\Repository|mixed
      *
      * @throws NotFoundException
      */
-    public function getServerNode($server_name = null)
+    public function getServerNode()
     {
         //根据不同配置选择节点
-        if ($this->server_name == SwooleService::NODE_MANAGER) {
-            $node_find_conf = config('swoole.' . SwooleService::NODE_MANAGER);
+        if (in_array($this->server_name, config('swoole.kernel_servers'))) {
+            $node_find_conf = config('swoole.' . $this->server_name);
         } else {
             $node_find_conf = config('swoole.server');
         }
@@ -88,21 +86,22 @@ class SwooleClient
     {
         $online = [];
         $weight = 0;
-        //如果指定了节点就只查看指定节点状态
         $target_node = null;
         foreach ($server_node as $node) {
+            if (!empty($this->node_host) && $node['ip'] == $this->node_host) {
+                //如果指定了节点就只查看指定节点
+                $this->host = $node['ip'];
+                $this->port = $node['port'];
+                return $node; //找到直接结束
+            }
             if ($node['status'] == 'online') {
                 $node['weight_range'] = [$weight, ($weight += $node['weight'])];
                 $online[] = $node;
-                if (!empty($this->node_host) && $node['ip'] == $this->node_host) {
-                    $target_node = $node;
-                    break;//找到直接结束
-                }
             }
         }
 
         if (!empty($this->node_host) && is_null($target_node)) {
-            throw new NotFoundException("can not find {$this->node_host} node");
+            throw new NotFoundException("can not find {$this->node_host} target node");
         }
 
         if (empty($online)) {
@@ -120,7 +119,7 @@ class SwooleClient
                 return $node;
             }
         }
-        throw new NotFoundException("cant find {$this->server_name} node");
+        throw new NotFoundException("can't find {$this->server_name} node");
     }
 
 

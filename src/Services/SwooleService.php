@@ -39,7 +39,7 @@ class SwooleService
     public function initConfig(string $server_name)
     {
         $this->server_name = $server_name;
-        if (in_array($this->server_name, [self::NODE_MANAGER, self::CRON_MANAGER])) {
+        if (in_array($this->server_name, config('swoole.kernel_servers'))) {
             self::$config = config('swoole.' . $this->server_name);
         } else {
             self::$config = config('swoole.server');
