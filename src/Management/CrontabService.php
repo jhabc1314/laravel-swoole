@@ -11,6 +11,7 @@ namespace JackDou\Swoole\Management;
 
 use Illuminate\Support\Facades\Log;
 use JackDou\Management\Models\Crontab;
+use JackDou\Management\Notifications\SwooleServerNotify;
 use JackDou\Swoole\Exceptions\NotFoundException;
 
 class CrontabService
@@ -96,8 +97,8 @@ class CrontabService
         } else {
             $crontab->cron_id = -1;
             $crontab->cron_node_status = 0;
-            //TODO 通知
-            return self::success($crontab);
+            //清除失败，有可能是已经不存在等原因
+            return self::fail($crontab);
         }
     }
 

@@ -8,7 +8,10 @@
 
 namespace JackDou\Swoole\Services;
 
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+use JackDou\Management\Models\Notice;
+use JackDou\Management\Models\Notify;
+use JackDou\Management\Notifications\SwooleServerNotify;
 use JackDou\Swoole\Facade\Service;
 use JackDou\Swoole\Management\CrontabService;
 use Swoole\Server;
@@ -16,6 +19,14 @@ use Swoole\Server;
 class SwooleEventService extends SwooleService
 {
 
+    /**
+     * SwooleEventService constructor.
+     *
+     * @param string $server_name
+     *
+     * @throws \JackDou\Swoole\Exceptions\NotFoundException
+     *
+     */
     public function __construct(string $server_name)
     {
         $this->initConfig($server_name);
@@ -85,7 +96,15 @@ class SwooleEventService extends SwooleService
                         Service::getInstance(SwooleService::NODE_MANAGER, $management_host)
                             ->call('CrontabService::save', $crontab)
                             ->getResult();
-                        //TODO 通知
+                        //发送全局通知
+                        if (class_exists(Notify::class)) {
+                            event(new \JackDou\Management\Events\Notify([
+                                'notice_title' => '调度任务服务重启',
+                                'notice_text' => '拉取' . $crontab->id . '任务成功',
+                                'notice_level' => Notify::NOTICE,
+                                'notice_url' => route('crontab.index')
+                            ]));
+                        }
                     }
                 }
             }
